@@ -1,0 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root[data-theme="light"] {
+  --bg: #fafaf9;
+  --bg-elev: #ffffff;
+  --bg-subtle: #f4f4f2;
+  --border: #e7e5e1;
+  --border-strong: #d6d3cd;
+  --text: #18181b;
+  --text-muted: #71717a;
+  --text-subtle: #a1a1aa;
+  --accent: #0d9488;
+  --accent-bg: #ccfbf1;
+  --accent-fg: #115e59;
+  --danger: #b91c1c;
+  --warn: #b45309;
+  --warn-bg: #fef3c7;
+  --ok: #047857;
+  --ok-bg: #d1fae5;
+  --inactive: #525252;
+  --inactive-bg: #e7e5e4;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --bg-elev: #111111;
+  --bg-subtle: #161616;
+  --border: #232323;
+  --border-strong: #2e2e2e;
+  --text: #f4f4f5;
+  --text-muted: #a1a1aa;
+  --text-subtle: #71717a;
+  --accent: #2dd4bf;
+  --accent-bg: #042f2e;
+  --accent-fg: #5eead4;
+  --danger: #f87171;
+  --warn: #fbbf24;
+  --warn-bg: #422006;
+  --ok: #34d399;
+  --ok-bg: #052e16;
+  --inactive: #a1a1aa;
+  --inactive-bg: #1f1f1f;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: theme("fontFamily.sans");
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Hide scrollbars only where chrome adds visual noise. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}

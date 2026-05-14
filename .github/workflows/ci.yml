@@ -1,0 +1,58 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  api:
+    name: api · lint + test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v3
+      - name: Install deps
+        working-directory: apps/api
+        run: |
+          uv venv
+          uv pip install -e .
+          uv pip install pytest pytest-asyncio httpx ruff mypy 'testcontainers[postgres]'
+      - name: Ruff
+        working-directory: apps/api
+        run: uv run ruff check .
+      - name: Pytest
+        working-directory: apps/api
+        run: uv run pytest -v
+
+  web:
+    name: web · lint + typecheck + test + build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.5.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: apps/web/pnpm-lock.yaml
+      - name: Install deps
+        working-directory: apps/web
+        run: pnpm install --no-frozen-lockfile
+      - name: Typecheck
+        working-directory: apps/web
+        run: pnpm typecheck
+      - name: Test
+        working-directory: apps/web
+        run: pnpm test
+      - name: Build
+        working-directory: apps/web
+        env:
+          VITE_API_URL: /api/v1
+        run: pnpm build

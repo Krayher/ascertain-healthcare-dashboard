@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 
+import { StatusDistribution } from "@/features/dashboard/components/StatusDistribution";
 import { useDashboard } from "@/features/dashboard/api";
 import { cn } from "@/lib/cn";
 import { formatDateTime } from "@/lib/format";
@@ -51,11 +52,25 @@ export default function DashboardPage() {
         />
       </section>
 
-      <div className="grid grid-cols-[2fr_1fr] gap-4">
+      <div className="mb-4 grid grid-cols-[2fr_1fr] gap-4">
         <Panel title="Notes activity" subtitle="last 14 days">
           {data ? <Bars activity={data.activity} /> : <Skeleton h={140} />}
         </Panel>
 
+        <Panel title="Status distribution" subtitle="all patients">
+          {data ? (
+            <StatusDistribution
+              active={data.stats.active_patients}
+              followUp={data.stats.follow_up_patients}
+              inactive={data.stats.inactive_patients}
+            />
+          ) : (
+            <Skeleton h={140} />
+          )}
+        </Panel>
+      </div>
+
+      <div className="grid gap-4">
         <Panel title="Recent activity" subtitle={data ? "live" : ""}>
           {!data ? (
             <Skeleton h={200} />
@@ -73,7 +88,7 @@ export default function DashboardPage() {
                     <span className="text-fg-muted">— {trunc(n.content, 70)}</span>
                   </Link>
                   <div className="mt-0.5 font-mono text-[11px] text-fg-subtle">
-                    {formatDateTime(n.created_at)} · {n.author}
+                    {formatDateTime(n.timestamp)}
                   </div>
                 </li>
               ))}

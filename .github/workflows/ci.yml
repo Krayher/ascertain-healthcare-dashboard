@@ -54,5 +54,87 @@ jobs:
       - name: Build
         working-directory: apps/web
         env:
-          VITE_API_URL: /api/v1
+          VITE_API_URL: http://localhost:8000
         run: pnpm build
+
+  e2e:
+    name: e2e · playwright
+    runs-on: ubuntu-latest
+    needs: [api, web]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v3
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.5.2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: apps/web/pnpm-lock.yaml
+      - name: Install web deps
+        working-directory: apps/web
+        run: pnpm install --no-frozen-lockfile
+      - name: Install Playwright browsers
+        working-directory: apps/web
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Bring up stack
+        run: |
+          cp .env.example .env
+          docker compose up -d --build db migrate api web
+          for i in {1..60}; do
+            curl -sf http://localhost:8000/health && curl -sf http://localhost:5173/ && break
+            sleep 2
+          done
+      - name: Run E2E
+        working-directory: apps/web
+        env:
+          E2E_BASE_URL: http://localhost:5173
+        run: pnpm e2e
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report/
+          retention-days: 7
+      - name: Tear down
+        if: always()
+        run: docker compose logs api web db > docker-logs.txt 2>&1 && docker compose down -v
+      - name: Upload docker logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-logs
+          path: docker-logs.txt
+          retention-days: 7
+
+  images:
+    name: build · docker images
+    runs-on: ubuntu-latest
+    needs: [api, web]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build api image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./apps/api
+          push: false
+          tags: ascertain-api:ci
+          cache-from: type=gha,scope=api
+          cache-to: type=gha,scope=api,mode=max
+      - name: Build web image (production)
+        uses: docker/build-push-action@v6
+        with:
+          context: ./apps/web
+          push: false
+          tags: ascertain-web:ci
+          target: runtime
+          build-args: |
+            VITE_API_URL=http://localhost:8000
+          cache-from: type=gha,scope=web
+          cache-to: type=gha,scope=web,mode=max

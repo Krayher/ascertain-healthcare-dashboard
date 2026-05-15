@@ -42,9 +42,9 @@ class ClaudeSummarizer(Summarizer):
 
     @staticmethod
     def _build_user_prompt(patient: Patient, notes: list[Note]) -> str:
-        sorted_notes = sorted(notes, key=lambda n: n.created_at, reverse=True)
+        sorted_notes = sorted(notes, key=lambda n: n.timestamp, reverse=True)
         lines = [
-            f"Patient: {patient.first_name} {patient.last_name}",
+            f"Patient: {patient.name}",
             f"DOB: {patient.date_of_birth.isoformat()}",
             f"Blood type: {patient.blood_type}",
             f"Status: {patient.status}",
@@ -54,5 +54,5 @@ class ClaudeSummarizer(Summarizer):
             "Notes (newest first):",
         ]
         for n in sorted_notes:
-            lines.append(f"- {n.created_at:%Y-%m-%d}: {n.content} — {n.author}")
+            lines.append(f"- {n.timestamp:%Y-%m-%d}: {n.content}")
         return "\n".join(lines)

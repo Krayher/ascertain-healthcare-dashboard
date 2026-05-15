@@ -5,12 +5,14 @@ import type { Patient } from "@/lib/api/client";
 import { cn } from "@/lib/cn";
 import { formatDate, initials } from "@/lib/format";
 
+type SortField = "last_visit" | "name" | "created_at";
+
 type Props = {
   rows: Patient[];
   onRowClick: (id: string) => void;
-  sort?: "last_visit_at" | "name" | "created_at";
+  sort?: SortField;
   order?: "asc" | "desc";
-  onSortChange?: (sort: "last_visit_at" | "name" | "created_at") => void;
+  onSortChange?: (sort: SortField) => void;
 };
 
 const HEAD = "px-3.5 py-3 text-left font-medium uppercase tracking-[0.08em] text-[11.5px] text-fg-subtle";
@@ -34,7 +36,7 @@ export function PatientTable({ rows, onRowClick, sort, order, onSortChange }: Pr
           <th className={HEAD}>
             <SortHeader
               label="Last visit"
-              field="last_visit_at"
+              field="last_visit"
               activeField={sort}
               order={order}
               onChange={onSortChange}
@@ -55,12 +57,10 @@ export function PatientTable({ rows, onRowClick, sort, order, onSortChange }: Pr
             <td className={TD}>
               <div className="flex items-center gap-3">
                 <div className="grid h-8 w-8 place-items-center rounded-full bg-accent-bg text-[12px] font-semibold text-accent-fg">
-                  {initials(p.first_name, p.last_name)}
+                  {initials(p.name)}
                 </div>
                 <div>
-                  <div className="font-medium text-fg">
-                    {p.first_name} {p.last_name}
-                  </div>
+                  <div className="font-medium text-fg">{p.name}</div>
                   <div className="font-mono text-[11px] text-fg-subtle">
                     {p.mrn} · {p.blood_type}
                   </div>
@@ -69,7 +69,7 @@ export function PatientTable({ rows, onRowClick, sort, order, onSortChange }: Pr
             </td>
             <td className={TD}>{p.age}</td>
             <td className={cn(TD, "font-mono text-[12px] text-fg-muted")}>
-              {p.last_visit_at ? formatDate(p.last_visit_at) : "—"}
+              {p.last_visit ? formatDate(p.last_visit) : "—"}
             </td>
             <td className={TD}>
               {!p.conditions || p.conditions.length === 0 ? (
@@ -111,10 +111,10 @@ function SortHeader({
   onChange,
 }: {
   label: string;
-  field: "last_visit_at" | "name" | "created_at";
+  field: SortField;
   activeField?: string;
   order?: "asc" | "desc";
-  onChange?: (sort: "last_visit_at" | "name" | "created_at") => void;
+  onChange?: (sort: SortField) => void;
 }) {
   if (!onChange) return <>{label}</>;
   const active = activeField === field;

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 type Props = {
-  expectedLastName: string;
+  expectedName: string;
   open: boolean;
   onCancel: () => void;
   onConfirm: () => void;
@@ -12,7 +12,7 @@ type Props = {
 };
 
 export function ConfirmDelete({
-  expectedLastName,
+  expectedName,
   open,
   onCancel,
   onConfirm,
@@ -21,7 +21,7 @@ export function ConfirmDelete({
   const [value, setValue] = useState("");
 
   if (!open) return null;
-  const matches = value.trim().toLowerCase() === expectedLastName.toLowerCase();
+  const matches = value.trim().toLowerCase() === expectedName.toLowerCase();
 
   return (
     <div
@@ -33,13 +33,13 @@ export function ConfirmDelete({
         <h2 className="mb-2 font-serif text-2xl italic">Delete patient?</h2>
         <p className="text-[13.5px] text-fg-muted">
           This permanently removes the patient and all of their notes. To
-          confirm, type the last name <strong className="text-fg">{expectedLastName}</strong>{" "}
-          below.
+          confirm, type the patient&apos;s name{" "}
+          <strong className="text-fg">{expectedName}</strong> below.
         </p>
         <Input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder={expectedLastName}
+          placeholder={expectedName}
           autoFocus
           className="mt-3"
         />

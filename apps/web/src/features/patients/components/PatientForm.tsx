@@ -34,11 +34,9 @@ export function PatientForm({
   const form = useForm<PatientFormValues>({
     resolver: zodResolver(patientFormSchema),
     defaultValues: {
-      first_name: "",
-      last_name: "",
+      name: "",
       date_of_birth: "",
-      phone: "",
-      email: "",
+      contact: "",
       address: "",
       blood_type: "O+",
       status: "active",
@@ -92,31 +90,25 @@ export function PatientForm({
         title="Personal"
         subtitle="Identifiers used across the chart, notes, and future communications."
       >
-        <Field label="First name" required error={formState.errors.first_name?.message}>
-          <Input {...register("first_name")} error={!!formState.errors.first_name} />
+        <Field label="Name" required full error={formState.errors.name?.message}>
+          <Input {...register("name")} error={!!formState.errors.name} />
         </Field>
-        <Field label="Last name" required error={formState.errors.last_name?.message}>
-          <Input {...register("last_name")} error={!!formState.errors.last_name} />
-        </Field>
-        <Field label="Date of birth" required error={formState.errors.date_of_birth?.message}>
+        <Field
+          label="Date of birth"
+          required
+          error={formState.errors.date_of_birth?.message}
+        >
           <Input
             type="date"
             {...register("date_of_birth")}
             error={!!formState.errors.date_of_birth}
           />
         </Field>
-        <Field label="Phone" required error={formState.errors.phone?.message}>
+        <Field label="Contact" required error={formState.errors.contact?.message}>
           <Input
-            {...register("phone")}
-            placeholder="+14155550142"
-            error={!!formState.errors.phone}
-          />
-        </Field>
-        <Field label="Email" full error={formState.errors.email?.message}>
-          <Input
-            type="email"
-            {...register("email")}
-            error={!!formState.errors.email}
+            {...register("contact")}
+            placeholder="+14155550142 | name@example.com"
+            error={!!formState.errors.contact}
           />
         </Field>
         <Field label="Address" full error={formState.errors.address?.message}>

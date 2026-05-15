@@ -3,7 +3,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime
 
-from sqlalchemy import DateTime, ForeignKey, String, Text, func
+from sqlalchemy import DateTime, ForeignKey, Text, func
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -23,7 +23,11 @@ class Note(Base):
         index=True,
     )
     content: Mapped[str] = mapped_column(Text)
-    author: Mapped[str] = mapped_column(String(120))
+    # Clinical event time supplied by the caller (defaults to now()).
+    timestamp: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+    # Row insertion time set server-side.
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )

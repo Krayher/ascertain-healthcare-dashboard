@@ -23,13 +23,13 @@ spec:
             - secretRef: { name: api-secret }
           readinessProbe:
             httpGet:
-              path: /api/v1/health
+              path: /health
               port: 8000
             initialDelaySeconds: 3
             periodSeconds: 5
           livenessProbe:
             httpGet:
-              path: /api/v1/health
+              path: /health
               port: 8000
             initialDelaySeconds: 10
             periodSeconds: 10

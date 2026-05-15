@@ -1,6 +1,4 @@
-import type { paths } from "@/lib/api/schema";
-
-const BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? "/api/v1";
+const BASE = (import.meta.env.VITE_API_URL as string | undefined) ?? "";
 
 export class ApiError extends Error {
   status: number;
@@ -34,26 +32,89 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   return (await res.json()) as T;
 }
 
-type J<T> = T extends { content: { "application/json": infer U } } ? U : never;
+export type BloodType =
+  | "O+"
+  | "O-"
+  | "A+"
+  | "A-"
+  | "B+"
+  | "B-"
+  | "AB+"
+  | "AB-";
 
-export type Patient = J<
-  paths["/api/v1/patients/{patient_id}"]["get"]["responses"]["200"]
->;
-export type PatientPage = J<
-  paths["/api/v1/patients"]["get"]["responses"]["200"]
->;
-export type PatientCreatePayload = J<
-  NonNullable<paths["/api/v1/patients"]["post"]["requestBody"]>
->;
-export type Note = J<
-  paths["/api/v1/patients/{patient_id}/notes"]["get"]["responses"]["200"]
->[number];
-export type NoteCreatePayload = J<
-  NonNullable<paths["/api/v1/patients/{patient_id}/notes"]["post"]["requestBody"]>
->;
-export type Summary = J<
-  paths["/api/v1/patients/{patient_id}/summary"]["get"]["responses"]["200"]
->;
-export type Dashboard = J<
-  paths["/api/v1/stats/dashboard"]["get"]["responses"]["200"]
->;
+export type PatientStatus = "active" | "follow_up" | "inactive";
+
+export type Patient = {
+  id: string;
+  name: string;
+  date_of_birth: string;
+  contact: string;
+  address: string | null;
+  blood_type: BloodType;
+  status: PatientStatus;
+  conditions: string[];
+  allergies: string[];
+  last_visit: string | null;
+  created_at: string;
+  updated_at: string;
+  age: number;
+  mrn: string;
+};
+
+export type PatientCreatePayload = {
+  name: string;
+  date_of_birth: string;
+  contact: string;
+  address?: string | null;
+  blood_type: BloodType;
+  status?: PatientStatus;
+  conditions?: string[];
+  allergies?: string[];
+};
+
+export type PatientPage = {
+  items: Patient[];
+  page: number;
+  page_size: number;
+  total: number;
+  total_pages: number;
+};
+
+export type Note = {
+  id: string;
+  patient_id: string;
+  content: string;
+  timestamp: string;
+  created_at: string;
+};
+
+export type NoteCreatePayload = {
+  content: string;
+  timestamp?: string;
+};
+
+export type Summary = {
+  summary: string;
+  source: string;
+  note_count: number;
+};
+
+export type RecentNote = {
+  id: string;
+  patient_id: string;
+  patient_name: string;
+  content: string;
+  timestamp: string;
+};
+
+export type Dashboard = {
+  stats: {
+    total_patients: number;
+    active_patients: number;
+    follow_up_patients: number;
+    inactive_patients: number;
+    notes_this_week: number;
+  };
+  recent_notes: RecentNote[];
+  activity: number[];
+};

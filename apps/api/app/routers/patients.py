@@ -21,7 +21,11 @@ def list_patients(
     page_size: int = Query(20, ge=1, le=100),
     search: str | None = None,
     status_: str | None = Query(None, alias="status"),
-    sort: str = Query("last_visit_at"),
+    blood_type: str | None = Query(None),
+    condition: str | None = Query(None),
+    age_min: int | None = Query(None, ge=0, le=150),
+    age_max: int | None = Query(None, ge=0, le=150),
+    sort: str = Query("last_visit"),
     order: str = Query("desc"),
 ) -> Page[PatientRead]:
     try:
@@ -31,6 +35,10 @@ def list_patients(
             page_size=page_size,
             search=search,
             status=status_,
+            blood_type=blood_type,
+            condition=condition,
+            age_min=age_min,
+            age_max=age_max,
             sort=sort,
             order=order,
         )

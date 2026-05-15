@@ -33,11 +33,9 @@ export default function PatientNewPage() {
 
   const initial: Partial<PatientFormValues> | undefined = patient.data
     ? {
-        first_name: patient.data.first_name,
-        last_name: patient.data.last_name,
+        name: patient.data.name,
         date_of_birth: patient.data.date_of_birth,
-        phone: patient.data.phone,
-        email: patient.data.email ?? "",
+        contact: patient.data.contact,
         address: patient.data.address ?? "",
         blood_type: patient.data.blood_type as PatientFormValues["blood_type"],
         status: patient.data.status as PatientFormValues["status"],
@@ -53,13 +51,9 @@ export default function PatientNewPage() {
       <header className="mb-6 px-8">
         <h1 className="font-serif text-4xl leading-none tracking-tight">
           {editing ? (
-            <>
-              Edit <em className="italic">{patient.data?.first_name} {patient.data?.last_name}</em>
-            </>
+            <>Edit <em className="italic">{patient.data?.name}</em></>
           ) : (
-            <>
-              Register a <em className="italic">new patient</em>.
-            </>
+            <>Register a <em className="italic">new patient</em>.</>
           )}
         </h1>
         <p className="mt-1.5 text-[13.5px] text-fg-muted">

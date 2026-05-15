@@ -26,3 +26,8 @@ dist/
 
 # Generated
 apps/web/src/lib/api/schema.ts
+
+# Playwright
+apps/web/test-results/
+apps/web/playwright-report/
+apps/web/playwright/.cache/

@@ -16,8 +16,6 @@ import {
   useSummary,
 } from "@/features/patients/api";
 
-const AUTHOR = "Dr. A. Reeves";
-
 export default function PatientDetailPage() {
   const { id } = useParams();
   const nav = useNavigate();
@@ -72,10 +70,9 @@ export default function PatientDetailPage() {
           )}
 
           <NoteComposer
-            author={AUTHOR}
             pending={addNote.isPending}
             onSubmit={async (content) => {
-              await addNote.mutateAsync({ content, author: AUTHOR });
+              await addNote.mutateAsync({ content });
             }}
           />
         </div>
@@ -85,7 +82,7 @@ export default function PatientDetailPage() {
 
       <ConfirmDelete
         open={confirmOpen}
-        expectedLastName={p.last_name}
+        expectedName={p.name}
         pending={deletePatient.isPending}
         onCancel={() => setConfirmOpen(false)}
         onConfirm={async () => {

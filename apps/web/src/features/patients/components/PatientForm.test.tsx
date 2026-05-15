@@ -30,16 +30,15 @@ describe("PatientForm", () => {
     const { container } = render(<PatientForm onSubmit={onSubmit} />);
     const form = container.querySelector("form")!;
     fill(form, {
-      first_name: "Test",
-      last_name: "Patient",
+      name: "Test Patient",
       date_of_birth: "1990-01-01",
-      phone: "+14155550000",
+      contact: "+14155550000",
     });
     fireEvent.submit(form);
     await waitFor(() => expect(onSubmit).toHaveBeenCalled());
     const submitted = onSubmit.mock.calls[0][0];
-    expect(submitted.first_name).toBe("Test");
-    expect(submitted.phone).toBe("+14155550000");
+    expect(submitted.name).toBe("Test Patient");
+    expect(submitted.contact).toBe("+14155550000");
   });
 
   test("maps server 422 errors to fields", async () => {
@@ -47,17 +46,16 @@ describe("PatientForm", () => {
       .fn()
       .mockRejectedValue(
         new ApiError(422, {
-          detail: [{ loc: ["body", "phone"], msg: "Server says no." }],
+          detail: [{ loc: ["body", "contact"], msg: "Server says no." }],
         }),
       );
     const user = userEvent.setup();
     const { container } = render(<PatientForm onSubmit={onSubmit} />);
     const form = container.querySelector("form")!;
     fill(form, {
-      first_name: "Test",
-      last_name: "Patient",
+      name: "Test Patient",
       date_of_birth: "1990-01-01",
-      phone: "+14155550000",
+      contact: "+14155550000",
     });
     await user.click(screen.getByRole("button", { name: /create patient/i }));
     await waitFor(() => {

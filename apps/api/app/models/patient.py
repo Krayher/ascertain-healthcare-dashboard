@@ -20,17 +20,15 @@ class Patient(Base):
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
     )
-    first_name: Mapped[str] = mapped_column(String(80))
-    last_name: Mapped[str] = mapped_column(String(80))
+    name: Mapped[str] = mapped_column(String(160))
     date_of_birth: Mapped[date] = mapped_column(Date)
-    phone: Mapped[str] = mapped_column(String(40))
-    email: Mapped[str | None] = mapped_column(String(160), nullable=True)
+    contact: Mapped[str] = mapped_column(String(200))
     address: Mapped[str | None] = mapped_column(String(240), nullable=True)
     blood_type: Mapped[str] = mapped_column(String(3))
     status: Mapped[str] = mapped_column(String(16), default="active", index=True)
     conditions: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
     allergies: Mapped[list[str]] = mapped_column(ARRAY(String), default=list)
-    last_visit_at: Mapped[datetime | None] = mapped_column(
+    last_visit: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
     created_at: Mapped[datetime] = mapped_column(

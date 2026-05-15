@@ -7,11 +7,10 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class NoteBase(BaseModel):
     content: Annotated[str, Field(min_length=1, max_length=4000)]
-    author: Annotated[str, Field(min_length=1, max_length=120)]
 
 
 class NoteCreate(NoteBase):
-    created_at: datetime | None = None
+    timestamp: datetime | None = None
 
 
 class NoteRead(NoteBase):
@@ -19,4 +18,5 @@ class NoteRead(NoteBase):
 
     id: uuid.UUID
     patient_id: uuid.UUID
+    timestamp: datetime
     created_at: datetime

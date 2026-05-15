@@ -4,8 +4,9 @@ import { formatDate, initials } from "@/lib/format";
 
 describe("format", () => {
   test("initials handles short names", () => {
-    expect(initials("Marisol", "Ortega")).toBe("MO");
-    expect(initials("", "")).toBe("");
+    expect(initials("Marisol Ortega")).toBe("MO");
+    expect(initials("Cher")).toBe("C");
+    expect(initials("")).toBe("");
   });
 
   test("formatDate handles nullish", () => {

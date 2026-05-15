@@ -8,10 +8,9 @@ from app.services.summarizer.template import TemplateSummarizer
 
 def test_template_summary_includes_basics() -> None:
     patient = Patient(
-        first_name="Test",
-        last_name="User",
+        name="Test User",
         date_of_birth=date(1980, 1, 1),
-        phone="+1",
+        contact="+1",
         blood_type="O+",
         status="active",
         conditions=["Hypertension"],
@@ -19,8 +18,7 @@ def test_template_summary_includes_basics() -> None:
     )
     note = Note(
         content="Doing well",
-        author="Dr. A",
-        created_at=datetime(2026, 5, 1, tzinfo=timezone.utc),
+        timestamp=datetime(2026, 5, 1, tzinfo=timezone.utc),
     )
 
     result = TemplateSummarizer().summarize(patient, [note])
@@ -34,10 +32,9 @@ def test_template_summary_includes_basics() -> None:
 
 def test_template_summary_no_notes() -> None:
     patient = Patient(
-        first_name="Empty",
-        last_name="Chart",
+        name="Empty Chart",
         date_of_birth=date(2000, 1, 1),
-        phone="+1",
+        contact="+1",
         blood_type="A+",
         status="active",
         conditions=[],
@@ -51,12 +48,11 @@ def test_template_summary_no_notes() -> None:
 
 def test_summary_endpoint(client) -> None:
     pid = client.post(
-        "/api/v1/patients",
+        "/patients",
         json={
-            "first_name": "Summary",
-            "last_name": "Test",
+            "name": "Summary Test",
             "date_of_birth": "1990-01-01",
-            "phone": "+14155553333",
+            "contact": "+14155553333",
             "blood_type": "O+",
             "status": "active",
             "conditions": ["Hypertension"],
@@ -65,11 +61,11 @@ def test_summary_endpoint(client) -> None:
     ).json()["id"]
 
     client.post(
-        f"/api/v1/patients/{pid}/notes",
-        json={"content": "First visit; doing well.", "author": "Dr. T"},
+        f"/patients/{pid}/notes",
+        json={"content": "First visit; doing well."},
     )
 
-    r = client.get(f"/api/v1/patients/{pid}/summary")
+    r = client.get(f"/patients/{pid}/summary")
     assert r.status_code == 200
     body = r.json()
     assert body["source"] == "template"

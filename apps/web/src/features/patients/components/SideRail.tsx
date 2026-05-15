@@ -6,8 +6,7 @@ export function SideRail({ patient }: { patient: Patient }) {
     <aside className="flex flex-col gap-4">
       <Card title="Identifiers">
         <KV k="DOB" v={formatDate(patient.date_of_birth)} />
-        <KV k="Phone" v={patient.phone} />
-        <KV k="Email" v={patient.email ?? "—"} />
+        <KV k="Contact" v={patient.contact} />
         <KV k="Address" v={patient.address ?? "—"} />
       </Card>
 

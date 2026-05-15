@@ -19,22 +19,21 @@ def list_notes(db: Session, patient_id: uuid.UUID) -> list[Note]:
     return list(
         db.query(Note)
         .filter(Note.patient_id == patient_id)
-        .order_by(Note.created_at.desc())
+        .order_by(Note.timestamp.desc())
     )
 
 
 def create_note(db: Session, patient_id: uuid.UUID, payload: NoteCreate) -> Note:
     patient = get_patient(db, patient_id)
-    created_at = payload.created_at or datetime.now(timezone.utc)
+    timestamp = payload.timestamp or datetime.now(timezone.utc)
     note = Note(
         patient_id=patient.id,
         content=payload.content,
-        author=payload.author,
-        created_at=created_at,
+        timestamp=timestamp,
     )
     db.add(note)
-    if patient.last_visit_at is None or created_at > patient.last_visit_at:
-        patient.last_visit_at = created_at
+    if patient.last_visit is None or timestamp > patient.last_visit:
+        patient.last_visit = timestamp
     db.commit()
     db.refresh(note)
     return note

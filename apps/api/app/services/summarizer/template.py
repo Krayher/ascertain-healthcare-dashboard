@@ -22,16 +22,16 @@ class TemplateSummarizer(Summarizer):
         )
         n = len(notes)
         if notes:
-            latest = max(notes, key=lambda x: x.created_at)
+            latest = max(notes, key=lambda x: x.timestamp)
             recent = (
                 f"{n} clinical note{'s' if n != 1 else ''} on record; the most recent "
-                f"({latest.created_at:%b %d, %Y}) reads: \"{latest.content[:180]}\""
+                f"({latest.timestamp:%b %d, %Y}) reads: \"{latest.content[:180]}\""
             )
         else:
             recent = "No clinical notes on record yet."
 
         summary = (
-            f"{patient.first_name} {patient.last_name} is a {age}-year-old, "
+            f"{patient.name} is a {age}-year-old, "
             f"blood type {patient.blood_type}. Status: {patient.status}. "
             f"Active conditions: {conditions}. Allergies: {allergies}. {recent}"
         )

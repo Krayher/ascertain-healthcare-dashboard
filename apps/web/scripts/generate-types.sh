@@ -6,7 +6,7 @@
 set -eu
 
 API_URL="${API_URL:-http://localhost:8000}"
-OPENAPI_URL="${API_URL}/api/v1/openapi.json"
+OPENAPI_URL="${API_URL}/openapi.json"
 OUT="src/lib/api/schema.ts"
 
 echo "→ Fetching schema from ${OPENAPI_URL}"

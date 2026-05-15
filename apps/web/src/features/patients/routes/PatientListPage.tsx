@@ -1,6 +1,6 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 
-import { FilterRow } from "@/features/patients/components/FilterRow";
+import { FilterRow, type Filters } from "@/features/patients/components/FilterRow";
 import { Pager } from "@/features/patients/components/Pager";
 import { PatientTable } from "@/features/patients/components/PatientTable";
 import { PatientTableVirtual } from "@/features/patients/components/PatientTableVirtual";
@@ -10,23 +10,33 @@ const PAGE_SIZE = 20;
 const VIRTUALIZATION_THRESHOLD = 50;
 
 type Status = "" | "active" | "follow_up" | "inactive";
-type SortField = "last_visit_at" | "name" | "created_at";
+type SortField = "last_visit" | "name" | "created_at";
 
 export default function PatientListPage() {
   const [params, setParams] = useSearchParams();
   const nav = useNavigate();
 
   const page = Math.max(1, Number(params.get("page") ?? "1"));
-  const search = params.get("search") ?? "";
-  const status = (params.get("status") ?? "") as Status;
-  const sort = (params.get("sort") ?? "last_visit_at") as SortField;
+  const filters: Filters = {
+    search: params.get("search") ?? "",
+    status: (params.get("status") ?? "") as Status,
+    bloodType: params.get("blood_type") ?? "",
+    condition: params.get("condition") ?? "",
+    ageMin: params.get("age_min") ?? "",
+    ageMax: params.get("age_max") ?? "",
+  };
+  const sort = (params.get("sort") ?? "last_visit") as SortField;
   const order = (params.get("order") ?? "desc") as "asc" | "desc";
 
   const query = usePatients({
     page,
     pageSize: PAGE_SIZE,
-    search: search || undefined,
-    status: status || undefined,
+    search: filters.search || undefined,
+    status: filters.status || undefined,
+    bloodType: filters.bloodType || undefined,
+    condition: filters.condition || undefined,
+    ageMin: filters.ageMin ? Number(filters.ageMin) : undefined,
+    ageMax: filters.ageMax ? Number(filters.ageMax) : undefined,
     sort,
     order,
   });
@@ -40,6 +50,18 @@ export default function PatientListPage() {
     setParams(merged);
   }
 
+  function onFiltersChange(next: Filters) {
+    update({
+      search: next.search,
+      status: next.status,
+      blood_type: next.bloodType,
+      condition: next.condition,
+      age_min: next.ageMin,
+      age_max: next.ageMax,
+      page: "1",
+    });
+  }
+
   return (
     <div className="px-8 py-7">
       <header className="mb-6">
@@ -47,18 +69,14 @@ export default function PatientListPage() {
           <em className="italic">{query.data?.total ?? "—"}</em> patients.
         </h1>
         <p className="mt-1.5 text-[13.5px] text-fg-muted">
-          {status ? `Filtered by ${status.replace("_", " ")}.` : "All statuses."} Sorted by{" "}
-          {sort === "last_visit_at" ? "most recent visit" : sort.replace("_", " ")}.
+          {filters.status
+            ? `Filtered by ${filters.status.replace("_", " ")}.`
+            : "All statuses."}{" "}
+          Sorted by {sort === "last_visit" ? "most recent visit" : sort.replace("_", " ")}.
         </p>
       </header>
 
-      <FilterRow
-        search={search}
-        status={status}
-        onChange={({ search, status }) =>
-          update({ search, status, page: "1" })
-        }
-      />
+      <FilterRow value={filters} onChange={onFiltersChange} />
 
       <div className="overflow-hidden rounded-lg border border-border bg-bg-elev">
         {query.isLoading && (

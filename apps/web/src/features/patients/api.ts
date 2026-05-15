@@ -20,7 +20,11 @@ export type ListParams = {
   pageSize: number;
   search?: string;
   status?: string;
-  sort?: "last_visit_at" | "name" | "created_at";
+  bloodType?: string;
+  condition?: string;
+  ageMin?: number;
+  ageMax?: number;
+  sort?: "last_visit" | "name" | "created_at";
   order?: "asc" | "desc";
 };
 
@@ -30,6 +34,10 @@ function toQuery(params: ListParams): string {
   qs.set("page_size", String(params.pageSize));
   if (params.search) qs.set("search", params.search);
   if (params.status) qs.set("status", params.status);
+  if (params.bloodType) qs.set("blood_type", params.bloodType);
+  if (params.condition) qs.set("condition", params.condition);
+  if (params.ageMin !== undefined) qs.set("age_min", String(params.ageMin));
+  if (params.ageMax !== undefined) qs.set("age_max", String(params.ageMax));
   if (params.sort) qs.set("sort", params.sort);
   if (params.order) qs.set("order", params.order);
   return qs.toString();

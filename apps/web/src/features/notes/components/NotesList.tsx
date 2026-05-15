@@ -22,9 +22,8 @@ export function NotesList({ notes, onDelete }: Props) {
           className="rounded-lg border border-border bg-bg-elev p-4"
         >
           <div className="mb-1.5 flex items-center gap-2.5 text-[12px] text-fg-muted">
-            <span className="font-medium text-fg">{n.author}</span>
             <span className="font-mono text-[11px] text-fg-subtle">
-              {formatDateTime(n.created_at)}
+              {formatDateTime(n.timestamp)}
             </span>
             <button
               type="button"

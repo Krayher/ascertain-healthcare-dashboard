@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-const phoneRe = /^\+?[0-9 .()\-]{7,20}$/;
-
 export const BLOOD_TYPES = [
   "O+",
   "O-",
@@ -15,14 +13,8 @@ export const BLOOD_TYPES = [
 
 export const STATUSES = ["active", "follow_up", "inactive"] as const;
 
-const emptyToUndef = z.preprocess(
-  (v) => (v === "" ? undefined : v),
-  z.string().optional(),
-);
-
 export const patientFormSchema = z.object({
-  first_name: z.string().min(1, "Required.").max(80, "Too long."),
-  last_name: z.string().min(1, "Required.").max(80, "Too long."),
+  name: z.string().min(1, "Required.").max(160, "Too long."),
   date_of_birth: z
     .string()
     .min(1, "Required.")
@@ -30,14 +22,7 @@ export const patientFormSchema = z.object({
       (s) => !!s && new Date(s) < new Date(),
       "Must be in the past.",
     ),
-  phone: z
-    .string()
-    .min(1, "Required.")
-    .regex(phoneRe, "Looks like an invalid phone number."),
-  email: emptyToUndef.refine(
-    (v) => v === undefined || z.string().email().safeParse(v).success,
-    "Must be a valid email.",
-  ),
+  contact: z.string().min(1, "Required.").max(200, "Too long."),
   address: z.preprocess(
     (v) => (v === "" ? undefined : v),
     z.string().max(240, "Too long.").optional(),

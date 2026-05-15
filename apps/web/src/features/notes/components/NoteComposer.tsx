@@ -3,12 +3,11 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
 type Props = {
-  author: string;
   onSubmit: (content: string) => Promise<void>;
   pending?: boolean;
 };
 
-export function NoteComposer({ author, onSubmit, pending }: Props) {
+export function NoteComposer({ onSubmit, pending }: Props) {
   const [content, setContent] = useState("");
   const [error, setError] = useState<string | null>(null);
 
@@ -42,7 +41,7 @@ export function NoteComposer({ author, onSubmit, pending }: Props) {
       />
       <div className="mt-2 flex items-center justify-between gap-3">
         <span className="font-mono text-[11.5px] text-fg-subtle">
-          Authored as {author} · timestamp captured on save.
+          Timestamp captured on save.
         </span>
         <Button type="submit" disabled={pending} className="px-3 py-1.5 text-[12px]">
           {pending ? "Saving…" : "Save"}

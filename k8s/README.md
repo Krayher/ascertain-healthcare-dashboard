@@ -33,7 +33,7 @@ and would slot cleanly into a real cluster.
 - `db-pvc.yaml` — 1Gi PVC for `/var/lib/postgresql/data`
 - `db-service.yaml` — ClusterIP for the database
 - `migrate-job.yaml` — one-shot `Job` running `alembic upgrade head && python -m app.seed`
-- `api-deployment.yaml` — FastAPI Deployment, readiness probe on `/api/v1/health`
+- `api-deployment.yaml` — FastAPI Deployment, readiness probe on `/health`
 - `api-service.yaml` — ClusterIP for the API
 - `api-configmap.yaml` — non-secret env (CORS origins, log level)
 - `api-secret.example.yaml` — secret template (DATABASE_URL, ANTHROPIC_API_KEY)

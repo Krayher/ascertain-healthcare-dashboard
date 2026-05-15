@@ -1,12 +1,9 @@
-import re
 import uuid
 from datetime import date, datetime
 from enum import Enum
 from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field, computed_field, field_validator
-
-PHONE_RE = re.compile(r"^\+?[0-9 .()\-]{7,20}$")
+from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator
 
 
 class BloodType(str, Enum):
@@ -27,23 +24,14 @@ class PatientStatus(str, Enum):
 
 
 class PatientBase(BaseModel):
-    first_name: Annotated[str, Field(min_length=1, max_length=80)]
-    last_name: Annotated[str, Field(min_length=1, max_length=80)]
+    name: Annotated[str, Field(min_length=1, max_length=160)]
     date_of_birth: date
-    phone: Annotated[str, Field(min_length=7, max_length=20)]
-    email: EmailStr | None = None
+    contact: Annotated[str, Field(min_length=1, max_length=200)]
     address: Annotated[str | None, Field(default=None, max_length=240)] = None
     blood_type: BloodType
     status: PatientStatus = PatientStatus.active
     conditions: list[str] = Field(default_factory=list)
     allergies: list[str] = Field(default_factory=list)
-
-    @field_validator("phone")
-    @classmethod
-    def _phone_shape(cls, v: str) -> str:
-        if not PHONE_RE.match(v):
-            raise ValueError("Phone must look like +14155550142 or similar.")
-        return v
 
     @field_validator("date_of_birth")
     @classmethod
@@ -65,7 +53,7 @@ class PatientRead(PatientBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: uuid.UUID
-    last_visit_at: datetime | None = None
+    last_visit: datetime | None = None
     created_at: datetime
     updated_at: datetime
 

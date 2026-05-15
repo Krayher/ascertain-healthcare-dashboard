@@ -59,11 +59,11 @@ export function PatientTableVirtual({ rows, onRowClick }: Props) {
               >
                 <div className="flex items-center gap-3">
                   <div className="grid h-8 w-8 place-items-center rounded-full bg-accent-bg text-[12px] font-semibold text-accent-fg">
-                    {initials(p.first_name, p.last_name)}
+                    {initials(p.name)}
                   </div>
                   <div>
                     <div className="text-[13.5px] font-medium text-fg">
-                      {p.first_name} {p.last_name}
+                      {p.name}
                     </div>
                     <div className="font-mono text-[11px] text-fg-subtle">
                       {p.mrn} · {p.blood_type}
@@ -72,7 +72,7 @@ export function PatientTableVirtual({ rows, onRowClick }: Props) {
                 </div>
                 <div className="text-[13.5px]">{p.age}</div>
                 <div className="font-mono text-[12px] text-fg-muted">
-                  {p.last_visit_at ? formatDate(p.last_visit_at) : "—"}
+                  {p.last_visit ? formatDate(p.last_visit) : "—"}
                 </div>
                 <div className="flex flex-wrap gap-1.5">
                   {(p.conditions ?? []).slice(0, 2).map((c) => (

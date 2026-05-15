@@ -23,7 +23,7 @@ In ~90 seconds:
 
 - Postgres comes up on `:5432`.
 - Migrations + seed run automatically (20 patients, ~100 notes).
-- API serves at <http://localhost:8000/api/v1>.
+- API serves at <http://localhost:8000>.
 - Web app at <http://localhost:5173>.
 
 Open the web app and click around. The dashboard, patient list, detail
@@ -32,6 +32,16 @@ view, form (create + edit), and notes are all wired up.
 To enable the Claude-powered summary endpoint, set `ANTHROPIC_API_KEY` in
 `.env` and rebuild the `api` service. Without it, the endpoint returns a
 template-generated summary — fully usable, no provisioning required.
+
+### Hot reload (both services)
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml watch
+```
+
+Edits under `apps/api/app/` sync into the running container; edits under
+`apps/web/src/` trigger Vite HMR through the dev server. Dependency files
+(`pyproject.toml`, `package.json`) trigger a rebuild.
 
 ---
 

@@ -14,11 +14,11 @@ export function PatientHeader({ patient, onDelete }: Props) {
   return (
     <div className="grid grid-cols-[auto_1fr_auto] items-center gap-5 border-b border-border px-8 py-6">
       <div className="grid h-16 w-16 place-items-center rounded-full bg-accent-bg text-[22px] font-semibold text-accent-fg">
-        {initials(patient.first_name, patient.last_name)}
+        {initials(patient.name)}
       </div>
       <div>
         <h1 className="m-0 font-serif text-4xl leading-none tracking-tight">
-          {patient.first_name} <em className="italic">{patient.last_name}</em>
+          {patient.name}
         </h1>
         <div className="mt-2 flex flex-wrap items-center gap-3 text-[13px] text-fg-muted">
           <span>
@@ -32,7 +32,7 @@ export function PatientHeader({ patient, onDelete }: Props) {
           <span>
             Last visit{" "}
             <span className="font-mono text-fg">
-              {formatDate(patient.last_visit_at ?? null)}
+              {formatDate(patient.last_visit ?? null)}
             </span>
           </span>
         </div>

@@ -19,6 +19,7 @@ class Stats(BaseModel):
     total_patients: int
     active_patients: int
     follow_up_patients: int
+    inactive_patients: int
     notes_this_week: int
 
 
@@ -27,8 +28,7 @@ class RecentNote(BaseModel):
     patient_id: UUID
     patient_name: str
     content: str
-    author: str
-    created_at: datetime
+    timestamp: datetime
 
 
 class Dashboard(BaseModel):
@@ -54,12 +54,20 @@ def dashboard(db: Annotated[Session, Depends(get_db)]) -> Dashboard:
         )
         or 0
     )
+    inactive = (
+        db.scalar(
+            select(func.count())
+            .select_from(Patient)
+            .where(Patient.status == "inactive")
+        )
+        or 0
+    )
 
     now = datetime.now(timezone.utc)
     week_ago = now - timedelta(days=7)
     notes_this_week = (
         db.scalar(
-            select(func.count()).select_from(Note).where(Note.created_at >= week_ago)
+            select(func.count()).select_from(Note).where(Note.timestamp >= week_ago)
         )
         or 0
     )
@@ -67,7 +75,7 @@ def dashboard(db: Annotated[Session, Depends(get_db)]) -> Dashboard:
     recent_rows = (
         db.query(Note, Patient)
         .join(Patient, Note.patient_id == Patient.id)
-        .order_by(Note.created_at.desc())
+        .order_by(Note.timestamp.desc())
         .limit(10)
         .all()
     )
@@ -76,15 +84,13 @@ def dashboard(db: Annotated[Session, Depends(get_db)]) -> Dashboard:
         RecentNote(
             id=note.id,
             patient_id=patient.id,
-            patient_name=f"{patient.first_name} {patient.last_name}",
+            patient_name=patient.name,
             content=note.content,
-            author=note.author,
-            created_at=note.created_at,
+            timestamp=note.timestamp,
         )
         for note, patient in recent_rows
     ]
 
-    # Activity: notes created per day for the last 14 days (oldest first).
     activity: list[int] = []
     for offset in range(13, -1, -1):
         day_start = (now - timedelta(days=offset)).replace(
@@ -95,7 +101,7 @@ def dashboard(db: Annotated[Session, Depends(get_db)]) -> Dashboard:
             db.scalar(
                 select(func.count())
                 .select_from(Note)
-                .where(Note.created_at >= day_start, Note.created_at < day_end)
+                .where(Note.timestamp >= day_start, Note.timestamp < day_end)
             )
             or 0
         )
@@ -106,6 +112,7 @@ def dashboard(db: Annotated[Session, Depends(get_db)]) -> Dashboard:
             total_patients=total,
             active_patients=active,
             follow_up_patients=follow_up,
+            inactive_patients=inactive,
             notes_this_week=notes_this_week,
         ),
         recent_notes=recent_notes,

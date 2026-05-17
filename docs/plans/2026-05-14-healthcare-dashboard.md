@@ -1,8 +1,14 @@
 # Healthcare Dashboard — Implementation Plan
 
+> ⚠️ **Historical artifact — the original day-1 implementation plan.**
+> Kept for transparency about how the project was scoped and executed.
+> Several decisions evolved during implementation (URL prefix dropped,
+> field names consolidated, stretch goals expanded). For what is
+> *actually shipped*, read [`SPEC.md`](../../SPEC.md) at the repo root.
+
 **Goal:** Build a full-stack patient management dashboard (FastAPI + Postgres + React/Vite) implementing all five parts of the take-home brief plus a curated subset of stretch goals (Alembic, sort/filter, virtualization, dark/light theme, Pytest + Vitest, GitHub Actions CI), packaged with Docker Compose `develop.watch` and documented with ADRs + HLD + manual + K8s parity manifests.
 
-**Spec:** `docs/specs/2026-05-14-healthcare-dashboard-design.md`
+**Spec:** `docs/specs/2026-05-14-healthcare-dashboard-design.md` (also historical — see [`SPEC.md`](../../SPEC.md) for current shipped state)
 
 **Architecture:** Monorepo with `apps/api` (FastAPI) and `apps/web` (Vite + React). Two-layer backend (routers → services). Frontend organized by feature folders. OpenAPI types codegen'd into the web app. Pluggable summarizer (template default, Claude optional). Compose orchestrates `db` + `migrate` + `api` + `web` with `develop.watch` for hot-reload.
 

@@ -41,6 +41,24 @@ describe("PatientForm", () => {
     expect(submitted.contact).toBe("+14155550000");
   });
 
+  test("blocks submit when contact has no phone or email", async () => {
+    const onSubmit = vi.fn();
+    const { container } = render(<PatientForm onSubmit={onSubmit} />);
+    const form = container.querySelector("form")!;
+    fill(form, {
+      name: "Test Patient",
+      date_of_birth: "1990-01-01",
+      contact: "please call me",
+    });
+    fireEvent.submit(form);
+    await waitFor(() => {
+      expect(
+        screen.getByText(/must include a phone number or email address/i),
+      ).toBeInTheDocument();
+    });
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+
   test("maps server 422 errors to fields", async () => {
     const onSubmit = vi
       .fn()

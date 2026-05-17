@@ -141,20 +141,32 @@ export function PatientForm({
             ))}
           </Select>
         </Field>
-        <Field label="Conditions · comma-separated" full>
+        <Field
+          label="Conditions · comma-separated"
+          full
+          error={conditionsError(formState.errors.conditions)}
+        >
           <Input
             defaultValue={listToCsv(initial?.conditions)}
             onChange={(e) =>
-              form.setValue("conditions", csvToList(e.target.value))
+              form.setValue("conditions", csvToList(e.target.value), {
+                shouldValidate: true,
+              })
             }
             placeholder="Hypertension, Type 2 diabetes"
           />
         </Field>
-        <Field label="Allergies · comma-separated" full>
+        <Field
+          label="Allergies · comma-separated"
+          full
+          error={conditionsError(formState.errors.allergies)}
+        >
           <Input
             defaultValue={listToCsv(initial?.allergies)}
             onChange={(e) =>
-              form.setValue("allergies", csvToList(e.target.value))
+              form.setValue("allergies", csvToList(e.target.value), {
+                shouldValidate: true,
+              })
             }
             placeholder="Sulfa drugs"
           />
@@ -162,14 +174,14 @@ export function PatientForm({
       </Section>
 
       {(formState.errors.root?.server || formState.errors.root?.network) && (
-        <div className="mx-8 mt-1 flex items-start gap-2 rounded-md border border-danger/40 bg-danger/10 px-3 py-2 text-[13px] text-danger">
+        <div className="mx-4 mt-1 flex items-start gap-2 rounded-md border border-danger/40 bg-danger/10 px-3 py-2 text-[13px] text-danger md:mx-8">
           <AlertCircle className="h-4 w-4 shrink-0" />
           {formState.errors.root?.network?.message ??
             formState.errors.root?.server?.message}
         </div>
       )}
 
-      <div className="mt-2 flex justify-end gap-2.5 border-t border-border px-8 py-4">
+      <div className="mt-2 flex flex-col-reverse gap-2 border-t border-border px-4 py-4 sm:flex-row sm:justify-end sm:gap-2.5 md:px-8">
         {onCancel && (
           <Button type="button" variant="ghost" onClick={onCancel} disabled={pending}>
             Cancel
@@ -193,16 +205,32 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <div className="grid grid-cols-[220px_1fr] gap-8 border-b border-border px-8 py-6">
+    <div className="grid grid-cols-1 gap-5 border-b border-border px-4 py-5 md:grid-cols-[220px_1fr] md:gap-8 md:px-8 md:py-6">
       <div>
-        <h3 className="m-0 font-serif text-[22px] italic leading-tight tracking-tight">
+        <h3 className="m-0 text-lg font-semibold leading-tight tracking-tight">
           {title}
         </h3>
         <p className="mt-1 text-[13px] text-fg-muted">{subtitle}</p>
       </div>
-      <div className="grid grid-cols-2 gap-4">{children}</div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">{children}</div>
     </div>
   );
+}
+
+// Surface either an array-level error (e.g. "At most 50 entries") or the
+// first per-element error from a `superRefine`-driven list field.
+function conditionsError(err: unknown): string | undefined {
+  if (!err) return undefined;
+  if (typeof err === "object" && err !== null && "message" in err) {
+    const m = (err as { message?: unknown }).message;
+    if (typeof m === "string" && m) return m;
+  }
+  if (Array.isArray(err)) {
+    for (const item of err) {
+      if (item && typeof item.message === "string") return item.message;
+    }
+  }
+  return undefined;
 }
 
 function Field({

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
 from uuid import UUID
 
@@ -63,7 +63,7 @@ def dashboard(db: Annotated[Session, Depends(get_db)]) -> Dashboard:
         or 0
     )
 
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     week_ago = now - timedelta(days=7)
     notes_this_week = (
         db.scalar(

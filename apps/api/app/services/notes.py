@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sqlalchemy.orm import Session
 
@@ -25,7 +25,7 @@ def list_notes(db: Session, patient_id: uuid.UUID) -> list[Note]:
 
 def create_note(db: Session, patient_id: uuid.UUID, payload: NoteCreate) -> Note:
     patient = get_patient(db, patient_id)
-    timestamp = payload.timestamp or datetime.now(timezone.utc)
+    timestamp = payload.timestamp or datetime.now(UTC)
     note = Note(
         patient_id=patient.id,
         content=payload.content,

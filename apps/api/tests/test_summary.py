@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import date, datetime, timezone
+from datetime import UTC, date, datetime
 
 from app.models import Note, Patient
 from app.services.summarizer.template import TemplateSummarizer
@@ -18,7 +18,7 @@ def test_template_summary_includes_basics() -> None:
     )
     note = Note(
         content="Doing well",
-        timestamp=datetime(2026, 5, 1, tzinfo=timezone.utc),
+        timestamp=datetime(2026, 5, 1, tzinfo=UTC),
     )
 
     result = TemplateSummarizer().summarize(patient, [note])

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from app.services.summarizer.base import SummaryResult, Summarizer
+from app.services.summarizer.base import Summarizer, SummaryResult
 from app.services.summarizer.claude import ClaudeSummarizer
 from app.services.summarizer.template import TemplateSummarizer
 from app.settings import get_settings
@@ -14,4 +14,4 @@ def build_summarizer() -> Summarizer:
     return template
 
 
-__all__ = ["SummaryResult", "Summarizer", "build_summarizer"]
+__all__ = ["Summarizer", "SummaryResult", "build_summarizer"]

@@ -32,8 +32,8 @@ def db_session(_pg):
     engine = _engine_for(_pg)
     Base.metadata.drop_all(engine)
     Base.metadata.create_all(engine)
-    SessionMaker = sessionmaker(bind=engine, expire_on_commit=False, future=True)
-    with SessionMaker() as session:
+    session_maker = sessionmaker(bind=engine, expire_on_commit=False, future=True)
+    with session_maker() as session:
         yield session
 
 

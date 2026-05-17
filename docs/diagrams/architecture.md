@@ -11,20 +11,21 @@ to illustrate the pluggable summarizer.
 ```mermaid
 flowchart LR
   subgraph Browser
-    UI["React SPA<br/>(Vite, Tailwind, TanStack Query)"]
+    UI["React SPA<br/>(Vite, Tailwind,<br/>TanStack Query, Zustand)"]
   end
 
   subgraph Compose["Docker Compose"]
     WEB["web<br/>nginx · serves /dist"]
-    API["api<br/>FastAPI · uvicorn"]
+    API["api<br/>FastAPI · uvicorn<br/>+ logging middleware"]
     MIG["migrate<br/>one-shot<br/>(alembic + seed)"]
     DB[("db<br/>Postgres 16")]
   end
 
   Claude(("Anthropic API<br/>optional"))
 
-  UI -->|fetch /api/v1/...| API
+  UI -->|fetch /patients<br/>/notes /summary<br/>/stats /health| API
   WEB -.->|serves static files| UI
+  API -->|x-request-id<br/>echoed in response| UI
   API -->|SQLAlchemy| DB
   MIG -->|upgrade head| DB
   MIG -.->|service_completed_successfully| API
@@ -36,7 +37,9 @@ flowchart LR
 
 **Key:** solid arrows are runtime requests, dashed arrows are control/setup
 dependencies. The Claude edge is dashed because it's only present when an
-API key is provisioned (see ADR-0004).
+`ANTHROPIC_API_KEY` is provisioned (see ADR-0004). Every API response
+carries an `x-request-id` header from the logging middleware in
+`apps/api/app/middleware/logging.py`.
 
 ---
 
@@ -54,7 +57,7 @@ sequenceDiagram
   participant DB as Postgres
 
   Doctor->>UI: opens /patients/:id
-  UI->>API: GET /api/v1/patients/{id}/summary
+  UI->>API: GET /patients/{id}/summary
   API->>DB: SELECT patient + notes
   DB-->>API: rows
   API->>Svc: build_summarizer()
@@ -102,4 +105,21 @@ On the frontend:
 | `features/<x>/components/` | UI components owned by the feature       |
 | `features/<x>/schema.ts`   | Zod schemas (forms)                      |
 | `components/ui/`           | Shared primitives (Button, Input, Select) |
-| `lib/`                     | Cross-cutting helpers (theme, format, API client) |
+| `lib/`                     | Cross-cutting helpers (theme, role, format, API client) |
+
+### Client state (Zustand stores)
+
+Three small persisted stores plus one in-memory store. Each is independently
+testable and read via a hook.
+
+| Store                              | Persisted? | Purpose                                       |
+|------------------------------------|------------|-----------------------------------------------|
+| `lib/theme.ts` (`useTheme`)        | localStorage | Light / dark theme, with system-prefers detect |
+| `lib/role.ts` (`useRole`)          | localStorage | Active role (`staff` / `admin`) + `useCan(perm)` selector |
+| `features/patients/view-mode.ts`   | localStorage | Patient list view mode (`table` / `cards`)    |
+| `app/layout/sidebar-state.ts`      | in-memory    | Mobile sidebar drawer open/close              |
+
+Server state is owned by TanStack Query and is never duplicated into these
+stores. The role and theme stores are read on first render to hydrate the
+right UI; cross-tab consistency comes from the persist middleware writing
+to the same `localStorage` key.

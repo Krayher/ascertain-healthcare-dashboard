@@ -1,9 +1,28 @@
 # Ascertain · Healthcare Dashboard — Design Spec
 
-**Status:** Approved
+**Status:** Historical artifact — kept for context.
 **Date:** 2026-05-14
 **Author:** Diego (with Claude)
 **Source brief:** Full-Stack Take-Home — Healthcare Dashboard
+
+> ⚠️ **This is the original design spec from day 1.** It pre-dates the
+> `SPEC.md` alignment pass and several follow-up changes (role switcher,
+> view modes, advanced filters, dashboard stats endpoint, responsive
+> reflow, etc.). It is preserved as a record of what was *planned*, not
+> what is *shipped*.
+>
+> **For the current source of truth, see [`SPEC.md`](../../SPEC.md) at
+> the repo root.** Where the two disagree, `SPEC.md` wins.
+>
+> Known places this document is now stale:
+> - **Field names** — this spec uses `first_name`/`last_name`, `phone`,
+>   `email`, `last_visit_at`. The shipped code uses single `name`,
+>   `contact`, and `last_visit` (see `SPEC.md` §8).
+> - **URL prefix** — this spec assumes `/api/v1/...`. The shipped code
+>   mounts routes at the root (`/patients`, not `/api/v1/patients`).
+> - **Note resource** — the shipped code has both `timestamp` (clinical
+>   event time, user-supplied) and `created_at` (server-set), without
+>   the `author` field this spec describes.
 
 ---
 

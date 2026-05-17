@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
+import { RoleSwitcher } from "@/app/layout/RoleSwitcher";
 import { cn } from "@/lib/cn";
 import { useTheme } from "@/lib/theme";
 
@@ -88,14 +89,8 @@ export function Sidebar() {
         Settings
       </NavLink>
 
-      <div className="mt-auto flex items-center gap-2.5 border-t border-border px-3 pt-3">
-        <div className="grid h-7 w-7 place-items-center rounded-full bg-accent-bg text-[12px] font-semibold text-accent-fg">
-          DA
-        </div>
-        <div className="text-[12.5px]">
-          <div className="leading-tight">Dr. Anya Reeves</div>
-          <div className="text-[11px] text-fg-subtle">Internal medicine</div>
-        </div>
+      <div className="mt-auto border-t border-border pt-2">
+        <RoleSwitcher />
       </div>
     </aside>
   );

@@ -8,6 +8,7 @@ import {
   useUpdatePatient,
 } from "@/features/patients/api";
 import type { PatientCreatePayload } from "@/lib/api/client";
+import { useCan } from "@/lib/role";
 
 export default function PatientNewPage() {
   const { id } = useParams();
@@ -16,6 +17,28 @@ export default function PatientNewPage() {
   const patient = usePatient(id);
   const createMut = useCreatePatient();
   const updateMut = useUpdatePatient();
+  const canCreate = useCan("patient:create");
+  const canEdit = useCan("patient:edit");
+
+  if ((editing && !canEdit) || (!editing && !canCreate)) {
+    return (
+      <div className="p-8">
+        <h1 className="mb-2 text-2xl font-semibold">Not authorized</h1>
+        <p className="text-sm text-fg-muted">
+          Your current role doesn&apos;t allow{" "}
+          {editing ? "editing patients" : "creating patients"}. Switch to
+          Administrator from the avatar in the lower-left to continue.
+        </p>
+        <button
+          type="button"
+          className="mt-3 text-sm underline"
+          onClick={() => nav(editing ? `/patients/${id}` : "/patients")}
+        >
+          Back
+        </button>
+      </div>
+    );
+  }
 
   if (editing && patient.isLoading) {
     return <div className="p-8 text-sm text-fg-muted">Loading patient…</div>;

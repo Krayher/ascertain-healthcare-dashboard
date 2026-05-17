@@ -6,6 +6,15 @@ test.describe("happy path", () => {
   test("create patient, view it, add a note", async ({ page }) => {
     const name = uniqueName();
 
+    // Patient CRUD requires the Administrator role. Seed it into
+    // localStorage before the app boots so the New patient affordances render.
+    await page.addInitScript(() => {
+      localStorage.setItem(
+        "ascertain-role",
+        JSON.stringify({ state: { role: "admin" }, version: 0 }),
+      );
+    });
+
     await page.goto("/patients");
     await expect(page.getByRole("heading", { name: /patients/i })).toBeVisible();
 

@@ -9,7 +9,7 @@ type Props = {
 export function NotesList({ notes, onDelete }: Props) {
   if (notes.length === 0) {
     return (
-      <p className="font-serif text-lg italic text-fg-muted">
+      <p className="text-sm text-fg-muted">
         No clinical notes recorded yet.
       </p>
     );

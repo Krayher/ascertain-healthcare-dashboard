@@ -6,9 +6,35 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        serif: ['"Instrument Serif"', "Iowan Old Style", "Georgia", "serif"],
-        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+        sans: [
+          "Inter",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Roboto",
+          "system-ui",
+          "sans-serif",
+        ],
+        // Headlines previously used Instrument Serif (decorative, hard to read).
+        // Mapped to the same Inter stack so existing `font-serif` callsites read
+        // cleanly without touching every component.
+        serif: [
+          "Inter",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Roboto",
+          "system-ui",
+          "sans-serif",
+        ],
+        mono: [
+          '"JetBrains Mono"',
+          "ui-monospace",
+          "SFMono-Regular",
+          "Menlo",
+          "Consolas",
+          "monospace",
+        ],
       },
       colors: {
         bg: "var(--bg)",

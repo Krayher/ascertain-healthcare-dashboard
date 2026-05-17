@@ -45,10 +45,13 @@ extend-exclude = ["alembic/versions"]
 select = ["E", "F", "I", "B", "UP", "N", "RUF"]
 # - N818 (Exception-name "Error" suffix) is stylistic and we follow the
 #   shorter `XxxNotFound` convention consistently across services.
+# - UP042 wants `class X(str, Enum)` → `class X(StrEnum)`. The current
+#   form serializes correctly through Pydantic v2 + FastAPI; migrating
+#   risks subtle JSON-shape changes for an aesthetic gain.
 # - UP046 (PEP 695 generic class syntax) is opt-in modernization; SQLAlchemy
 #    2.0 + Pydantic v2 compatibility is cleaner with the classic Generic[T]
 #   form today.
-ignore = ["N818", "UP046"]
+ignore = ["N818", "UP042", "UP046"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

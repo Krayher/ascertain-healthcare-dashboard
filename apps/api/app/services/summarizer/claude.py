@@ -5,7 +5,7 @@ import logging
 from anthropic import Anthropic, APIError, APITimeoutError
 
 from app.models import Note, Patient
-from app.services.summarizer.base import SummaryResult, Summarizer
+from app.services.summarizer.base import Summarizer, SummaryResult
 from app.services.summarizer.template import TemplateSummarizer
 
 log = logging.getLogger(__name__)

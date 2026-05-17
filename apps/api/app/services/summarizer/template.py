@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import date
 
 from app.models import Note, Patient
-from app.services.summarizer.base import SummaryResult, Summarizer
+from app.services.summarizer.base import Summarizer, SummaryResult
 
 
 def _age(dob: date) -> int:

@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import random
 import uuid
-from datetime import date, datetime, timedelta, timezone
+from datetime import UTC, date, datetime, timedelta
 
 from sqlalchemy.orm import Session
 
@@ -124,7 +124,7 @@ def seed(session: Session) -> int:
 
     rng = random.Random(20260514)  # deterministic
     inserted = 0
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
 
     for spec in PATIENTS:
         match = session.query(Patient).filter_by(name=spec["name"]).first()

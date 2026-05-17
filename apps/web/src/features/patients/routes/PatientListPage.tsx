@@ -2,9 +2,12 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 
 import { FilterRow, type Filters } from "@/features/patients/components/FilterRow";
 import { Pager } from "@/features/patients/components/Pager";
+import { PatientCards } from "@/features/patients/components/PatientCards";
 import { PatientTable } from "@/features/patients/components/PatientTable";
 import { PatientTableVirtual } from "@/features/patients/components/PatientTableVirtual";
+import { ViewModeToggle } from "@/features/patients/components/ViewModeToggle";
 import { usePatients } from "@/features/patients/api";
+import { usePatientViewMode } from "@/features/patients/view-mode";
 
 const PAGE_SIZE = 20;
 const VIRTUALIZATION_THRESHOLD = 50;
@@ -15,6 +18,7 @@ type SortField = "last_visit" | "name" | "created_at";
 export default function PatientListPage() {
   const [params, setParams] = useSearchParams();
   const nav = useNavigate();
+  const viewMode = usePatientViewMode((s) => s.mode);
 
   const page = Math.max(1, Number(params.get("page") ?? "1"));
   const filters: Filters = {
@@ -62,18 +66,25 @@ export default function PatientListPage() {
     });
   }
 
+  const items = query.data?.items ?? [];
+  const showVirtualTable =
+    viewMode === "table" && items.length > VIRTUALIZATION_THRESHOLD;
+
   return (
-    <div className="px-8 py-7">
-      <header className="mb-6">
-        <h1 className="font-serif text-4xl leading-none tracking-tight">
-          <em className="italic">{query.data?.total ?? "—"}</em> patients.
-        </h1>
-        <p className="mt-1.5 text-[13.5px] text-fg-muted">
-          {filters.status
-            ? `Filtered by ${filters.status.replace("_", " ")}.`
-            : "All statuses."}{" "}
-          Sorted by {sort === "last_visit" ? "most recent visit" : sort.replace("_", " ")}.
-        </p>
+    <div className="px-4 py-6 md:px-8 md:py-7">
+      <header className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+        <div>
+          <h1 className="font-serif text-2xl leading-tight tracking-tight md:text-4xl md:leading-none">
+            <span className="font-semibold">{query.data?.total ?? "—"}</span> patients
+          </h1>
+          <p className="mt-1.5 text-[13px] text-fg-muted md:text-[13.5px]">
+            {filters.status
+              ? `Filtered by ${filters.status.replace("_", " ")}.`
+              : "All statuses."}{" "}
+            Sorted by {sort === "last_visit" ? "most recent visit" : sort.replace("_", " ")}.
+          </p>
+        </div>
+        <ViewModeToggle />
       </header>
 
       <FilterRow value={filters} onChange={onFiltersChange} />
@@ -87,23 +98,28 @@ export default function PatientListPage() {
             Failed to load patients. {(query.error as Error).message}
           </div>
         )}
-        {query.data && query.data.items.length === 0 && (
+        {query.data && items.length === 0 && (
           <div className="p-12 text-center">
-            <p className="font-serif text-2xl italic text-fg-muted">
+            <p className="text-base text-fg-muted">
               No patients match these filters.
             </p>
           </div>
         )}
-        {query.data && query.data.items.length > 0 && (
+        {query.data && items.length > 0 && (
           <>
-            {query.data.items.length > VIRTUALIZATION_THRESHOLD ? (
+            {viewMode === "cards" ? (
+              <PatientCards
+                rows={items}
+                onRowClick={(id) => nav(`/patients/${id}`)}
+              />
+            ) : showVirtualTable ? (
               <PatientTableVirtual
-                rows={query.data.items}
+                rows={items}
                 onRowClick={(id) => nav(`/patients/${id}`)}
               />
             ) : (
               <PatientTable
-                rows={query.data.items}
+                rows={items}
                 onRowClick={(id) => nav(`/patients/${id}`)}
                 sort={sort}
                 order={order}

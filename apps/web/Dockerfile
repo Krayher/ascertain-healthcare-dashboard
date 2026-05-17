@@ -23,4 +23,8 @@ FROM nginx:alpine AS runtime
 COPY --from=build /app/dist /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
-HEALTHCHECK --interval=10s --timeout=3s CMD wget -qO- http://localhost/ >/dev/null || exit 1
+# nginx:alpine ships with neither curl nor wget; use the busybox http client
+# baked into the base image's util-linux instead. A failing index fetch (404,
+# 5xx, connection refused) returns non-zero so docker correctly flags the
+# container.
+HEALTHCHECK --interval=10s --timeout=3s CMD nc -z 127.0.0.1 80 || exit 1

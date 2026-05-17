@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
+import { RoleSwitcher } from "@/app/layout/RoleSwitcher";
+import { useSidebar } from "@/app/layout/sidebar-state";
 import { cn } from "@/lib/cn";
 import { useTheme } from "@/lib/theme";
 
@@ -29,6 +31,7 @@ const ITEMS: Item[] = [
 export function Sidebar() {
   const theme = useTheme((s) => s.theme);
   const toggle = useTheme((s) => s.toggle);
+  const closeDrawer = useSidebar((s) => s.set);
 
   return (
     <aside className="flex h-full flex-col border-r border-border bg-bg-subtle px-3 py-5">
@@ -44,6 +47,7 @@ export function Sidebar() {
           key={to}
           to={to}
           end={end}
+          onClick={() => closeDrawer(false)}
           className={({ isActive }) =>
             cn(
               "flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[13.5px] transition-colors",
@@ -75,6 +79,7 @@ export function Sidebar() {
       </button>
       <NavLink
         to="/settings"
+        onClick={() => closeDrawer(false)}
         className={({ isActive }) =>
           cn(
             "flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[13.5px] transition-colors",
@@ -88,14 +93,8 @@ export function Sidebar() {
         Settings
       </NavLink>
 
-      <div className="mt-auto flex items-center gap-2.5 border-t border-border px-3 pt-3">
-        <div className="grid h-7 w-7 place-items-center rounded-full bg-accent-bg text-[12px] font-semibold text-accent-fg">
-          DA
-        </div>
-        <div className="text-[12.5px]">
-          <div className="leading-tight">Dr. Anya Reeves</div>
-          <div className="text-[11px] text-fg-subtle">Internal medicine</div>
-        </div>
+      <div className="mt-auto border-t border-border pt-2">
+        <RoleSwitcher />
       </div>
     </aside>
   );

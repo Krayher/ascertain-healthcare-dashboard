@@ -8,6 +8,7 @@ import {
   useUpdatePatient,
 } from "@/features/patients/api";
 import type { PatientCreatePayload } from "@/lib/api/client";
+import { useCan } from "@/lib/role";
 
 export default function PatientNewPage() {
   const { id } = useParams();
@@ -16,6 +17,28 @@ export default function PatientNewPage() {
   const patient = usePatient(id);
   const createMut = useCreatePatient();
   const updateMut = useUpdatePatient();
+  const canCreate = useCan("patient:create");
+  const canEdit = useCan("patient:edit");
+
+  if ((editing && !canEdit) || (!editing && !canCreate)) {
+    return (
+      <div className="p-8">
+        <h1 className="mb-2 text-2xl font-semibold">Not authorized</h1>
+        <p className="text-sm text-fg-muted">
+          Your current role doesn&apos;t allow{" "}
+          {editing ? "editing patients" : "creating patients"}. Switch to
+          Administrator from the avatar in the lower-left to continue.
+        </p>
+        <button
+          type="button"
+          className="mt-3 text-sm underline"
+          onClick={() => nav(editing ? `/patients/${id}` : "/patients")}
+        >
+          Back
+        </button>
+      </div>
+    );
+  }
 
   if (editing && patient.isLoading) {
     return <div className="p-8 text-sm text-fg-muted">Loading patient…</div>;
@@ -47,13 +70,13 @@ export default function PatientNewPage() {
   const pending = createMut.isPending || updateMut.isPending;
 
   return (
-    <div className="py-7">
-      <header className="mb-6 px-8">
-        <h1 className="font-serif text-4xl leading-none tracking-tight">
+    <div className="py-6 md:py-7">
+      <header className="mb-6 px-4 md:px-8">
+        <h1 className="font-serif text-2xl leading-tight tracking-tight md:text-4xl md:leading-none">
           {editing ? (
-            <>Edit <em className="italic">{patient.data?.name}</em></>
+            <>Edit <span className="font-semibold">{patient.data?.name}</span></>
           ) : (
-            <>Register a <em className="italic">new patient</em>.</>
+            <>Register a <span className="font-semibold">new patient</span></>
           )}
         </h1>
         <p className="mt-1.5 text-[13.5px] text-fg-muted">

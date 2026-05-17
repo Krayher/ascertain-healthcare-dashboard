@@ -30,7 +30,7 @@ export function ConfirmDelete({
       className="fixed inset-0 z-50 grid place-items-center bg-black/40 p-4 backdrop-blur-sm"
     >
       <div className="w-full max-w-md rounded-lg border border-border bg-bg-elev p-6 shadow-xl">
-        <h2 className="mb-2 font-serif text-2xl italic">Delete patient?</h2>
+        <h2 className="mb-2 text-xl font-semibold">Delete patient?</h2>
         <p className="text-[13.5px] text-fg-muted">
           This permanently removes the patient and all of their notes. To
           confirm, type the patient&apos;s name{" "}

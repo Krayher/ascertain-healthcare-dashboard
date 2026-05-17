@@ -48,7 +48,7 @@ export default function PatientDetailPage() {
     <>
       <PatientHeader patient={p} onDelete={() => setConfirmOpen(true)} />
 
-      <div className="grid grid-cols-[1fr_320px] gap-5 px-8 py-6">
+      <div className="grid grid-cols-1 gap-5 px-4 py-6 md:grid-cols-[1fr_320px] md:px-8">
         <div className="min-w-0">
           <SummaryPanel data={summary.data} loading={summary.isLoading} />
 

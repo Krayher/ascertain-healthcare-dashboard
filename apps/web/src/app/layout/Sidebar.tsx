@@ -10,6 +10,7 @@ import {
 import { NavLink } from "react-router-dom";
 
 import { RoleSwitcher } from "@/app/layout/RoleSwitcher";
+import { useSidebar } from "@/app/layout/sidebar-state";
 import { cn } from "@/lib/cn";
 import { useTheme } from "@/lib/theme";
 
@@ -30,6 +31,7 @@ const ITEMS: Item[] = [
 export function Sidebar() {
   const theme = useTheme((s) => s.theme);
   const toggle = useTheme((s) => s.toggle);
+  const closeDrawer = useSidebar((s) => s.set);
 
   return (
     <aside className="flex h-full flex-col border-r border-border bg-bg-subtle px-3 py-5">
@@ -45,6 +47,7 @@ export function Sidebar() {
           key={to}
           to={to}
           end={end}
+          onClick={() => closeDrawer(false)}
           className={({ isActive }) =>
             cn(
               "flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[13.5px] transition-colors",
@@ -76,6 +79,7 @@ export function Sidebar() {
       </button>
       <NavLink
         to="/settings"
+        onClick={() => closeDrawer(false)}
         className={({ isActive }) =>
           cn(
             "flex items-center gap-2.5 rounded-md px-3 py-1.5 text-[13.5px] transition-colors",

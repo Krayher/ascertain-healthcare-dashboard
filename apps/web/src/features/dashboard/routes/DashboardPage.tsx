@@ -15,12 +15,12 @@ export default function DashboardPage() {
   });
 
   return (
-    <div className="px-8 py-7">
+    <div className="px-4 py-6 md:px-8 md:py-7">
       <header className="mb-6">
-        <h1 className="font-serif text-4xl leading-none tracking-tight">
-          Good morning, <em className="italic">Anya</em>.
+        <h1 className="font-serif text-2xl leading-tight tracking-tight md:text-4xl md:leading-none">
+          Good morning, <span className="font-semibold">Anya</span>.
         </h1>
-        <p className="mt-1.5 text-[13.5px] text-fg-muted">
+        <p className="mt-1.5 text-[13px] text-fg-muted md:text-[13.5px]">
           {today} · {data ? `${data.stats.follow_up_patients} follow-ups scheduled` : "loading…"} ·{" "}
           {data ? `${data.stats.notes_this_week} notes this week` : ""}
         </p>
@@ -32,7 +32,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <section className="mb-7 grid grid-cols-4 gap-3">
+      <section className="mb-7 grid grid-cols-2 gap-3 md:grid-cols-4">
         <Stat label="Active patients" value={data?.stats.active_patients} loading={isLoading} />
         <Stat
           label="Follow-ups due"
@@ -52,7 +52,7 @@ export default function DashboardPage() {
         />
       </section>
 
-      <div className="mb-4 grid grid-cols-[2fr_1fr] gap-4">
+      <div className="mb-4 grid grid-cols-1 gap-4 lg:grid-cols-[2fr_1fr]">
         <Panel title="Notes activity" subtitle="last 14 days">
           {data ? <Bars activity={data.activity} /> : <Skeleton h={140} />}
         </Panel>
@@ -119,7 +119,7 @@ function Stat({
       ) : (
         <div
           className={cn(
-            "font-serif text-[34px] leading-none tracking-tight",
+            "font-serif text-[28px] leading-none tracking-tight md:text-[34px]",
             tone === "warn" && value && value > 0 ? "text-warn" : "text-fg",
           )}
         >

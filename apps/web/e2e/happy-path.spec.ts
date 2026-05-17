@@ -18,7 +18,7 @@ test.describe("happy path", () => {
     await page.goto("/patients");
     await expect(page.getByRole("heading", { name: /patients/i })).toBeVisible();
 
-    await page.getByRole("link", { name: /\+ new patient/i }).click();
+    await page.getByRole("link", { name: /register new patient/i }).click();
     await expect(page).toHaveURL(/\/patients\/new/);
 
     await page.locator('input[name="name"]').fill(name);
@@ -41,7 +41,9 @@ test.describe("happy path", () => {
     // Navigate back to the list and confirm the patient appears.
     await page.getByRole("link", { name: "Patients" }).first().click();
     await expect(page).toHaveURL(/\/patients(\?|$)/);
-    await page.getByLabel("Search patients").fill(name);
+    // The list page has its own search filter; the topbar also has one.
+    // Use the FilterRow's textbox (placeholder differs) to disambiguate.
+    await page.getByPlaceholder(/filter by name, mrn/i).fill(name);
     await expect(page.getByText(name).first()).toBeVisible();
   });
 });

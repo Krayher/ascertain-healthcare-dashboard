@@ -70,13 +70,13 @@ export default function PatientNewPage() {
   const pending = createMut.isPending || updateMut.isPending;
 
   return (
-    <div className="py-7">
-      <header className="mb-6 px-8">
-        <h1 className="font-serif text-4xl leading-none tracking-tight">
+    <div className="py-6 md:py-7">
+      <header className="mb-6 px-4 md:px-8">
+        <h1 className="font-serif text-2xl leading-tight tracking-tight md:text-4xl md:leading-none">
           {editing ? (
-            <>Edit <em className="italic">{patient.data?.name}</em></>
+            <>Edit <span className="font-semibold">{patient.data?.name}</span></>
           ) : (
-            <>Register a <em className="italic">new patient</em>.</>
+            <>Register a <span className="font-semibold">new patient</span></>
           )}
         </h1>
         <p className="mt-1.5 text-[13.5px] text-fg-muted">

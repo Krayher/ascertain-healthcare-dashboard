@@ -280,7 +280,7 @@ Every API response **shall** carry an `x-request-id` header. If the caller suppl
 ## 7. Architecture Constraints
 
 - **Frontend:** React 18 + TypeScript (strict), scaffolded with Vite. State: TanStack Query (server state), Zustand (UI/client state). Forms: React Hook Form + Zod. Routing: React Router. Styling: Tailwind CSS + CSS variables for the theme. Icons: lucide-react. List virtualization: `@tanstack/react-virtual`.
-- **Backend:** FastAPI (Python 3.12), SQLAlchemy 2.0, Pydantic v2, Alembic for migrations, optional Anthropic SDK for the summarizer.
+- **Backend:** FastAPI (Python 3.12), SQLAlchemy 2.0, Pydantic v2, Alembic for migrations, optional Anthropic SDK for the summarizer. Database sessions are **sync by default**; the dashboard handler uses `AsyncSession` as a per-route opt-in (see [ADR-0011](docs/adr/0011-async-dashboard-handler.md)) because it issues multiple independent queries per call.
 - **Database:** PostgreSQL 16.
 - **Orchestration:** Docker Compose (with optional dev overlay for hot-reload). Kubernetes parity manifests live in `k8s/` for reference only.
 - **API style:** REST with JSON payloads. Routes are unprefixed (`/patients`, not `/api/v1/patients`).

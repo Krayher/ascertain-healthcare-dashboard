@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
 from uuid import UUID
 
@@ -40,7 +40,7 @@ class Dashboard(BaseModel):
 
 @router.get("/dashboard", response_model=Dashboard)
 async def dashboard(db: Annotated[AsyncSession, Depends(get_async_db)]) -> Dashboard:
-    now = datetime.now(timezone.utc)
+    now = datetime.now(UTC)
     week_ago = now - timedelta(days=7)
     window_start = (now - timedelta(days=13)).replace(
         hour=0, minute=0, second=0, microsecond=0

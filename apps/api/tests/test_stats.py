@@ -11,8 +11,8 @@ def _seed_via_sync(pg) -> None:
     from tests.conftest import _sync_url
 
     engine = create_engine(_sync_url(pg))
-    SessionMaker = sessionmaker(bind=engine, expire_on_commit=False)
-    with SessionMaker() as session:
+    session_maker = sessionmaker(bind=engine, expire_on_commit=False)
+    with session_maker() as session:
         seed(session)
     engine.dispose()
 

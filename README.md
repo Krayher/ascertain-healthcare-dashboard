@@ -127,7 +127,7 @@ Read these in roughly this order:
 2. [`docs/diagrams/architecture.md`](docs/diagrams/architecture.md) — HLD:
    Mermaid container diagram, request sequence for `/summary`, layer
    boundaries, client-state stores.
-3. [`docs/adr/`](docs/adr) — 10 ADRs. Each captures one decision with
+3. [`docs/adr/`](docs/adr) — 11 ADRs. Each captures one decision with
    context, trade-offs, and consequences.
 4. [`docs/manual.md`](docs/manual.md) — developer + clinician operator
    manual.
@@ -154,6 +154,7 @@ disagree.**
 | 0008 | [Role switcher + UI gating](docs/adr/0008-role-switcher.md) | Frontend-only demo of role-aware UI |
 | 0009 | [Responsive layout](docs/adr/0009-responsive-layout.md) | Sidebar drawer + media-query hook for `aria-hidden` |
 | 0010 | [Validation rules mirrored](docs/adr/0010-validation-mirrored.md) | Same Zod + Pydantic rules, server-422 maps to fields |
+| 0011 | [Async dashboard handler](docs/adr/0011-async-dashboard-handler.md) | Mixed sync/async sessions; dashboard endpoint earns async |
 
 ---
 
